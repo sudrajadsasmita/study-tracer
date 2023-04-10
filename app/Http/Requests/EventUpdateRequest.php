@@ -39,7 +39,7 @@ class EventUpdateRequest extends FormRequest
             "user_id" => "integer|required",
             "nama" => "string|required",
             "url" => "string|required",
-            "image" => "file|max:2024|required",
+            "image" => "file|max:2024|nullable",
             "type" => "string|in:LOKER,MAGANG,BEASISWA|required"
         ];
     }

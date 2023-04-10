@@ -6,6 +6,7 @@ use App\Http\Requests\ProfileCreateRequest;
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Models\Profile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class ProfileController extends Controller
 {
@@ -33,6 +34,10 @@ class ProfileController extends Controller
     {
         $data = $request->validated();
         try {
+            $data['photo']->store(
+                "assets/file/profile/$data[nim]",
+                'public'
+            );
             $profile = Profile::create($data);
             return $this->sendResponse(result: $profile, message: "create data successful...");
         } catch (\Exception $e) {
@@ -61,6 +66,16 @@ class ProfileController extends Controller
         $data = $request->validated();
         try {
             $profile = Profile::findOrFail($id);
+            if (isset($data["photo"])) {
+                $path = str_replace(asset(''), '', $profile->photo);
+
+                File::delete($profile->photo);
+                $path = $data["photo"]->store(
+                    "assets/file/profile/$profile->nim",
+                    'public'
+                );
+                $data["image"] = $path;
+            }
             $profile->update($data);
             return $this->sendResponse(result: $profile, message: "update data successful...");
         } catch (\Exception $e) {
@@ -74,6 +89,9 @@ class ProfileController extends Controller
     public function destroy(Profile $profile)
     {
         try {
+            $path = str_replace(asset(''), '', $profile->photo);
+            File::delete($path);
+            File::delete($profile->photo);
             $data = $profile->delete();
             return $this->sendResponse(result: $data, message: "delete data successful...");
         } catch (\Exception $e) {
