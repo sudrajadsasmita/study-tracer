@@ -33,6 +33,10 @@ class AuthController extends Controller
 
         Auth::login($user);
         $user = JWTAuth::user();
+        $userId = [
+            "user_id" => $user->id
+        ];
+        $userData = array_merge($userId, $user->toArray(), $profile->toArray());
         $profile = Profile::findOrFail($user->profile_id);
         $userData = array_merge($user->toArray(), $profile->toArray());
         $token = JWTAuth::customClaims($userData)->fromUser($user);
@@ -52,8 +56,11 @@ class AuthController extends Controller
 
         JWTAuth::attempt($credentials);
         $user = JWTAuth::user();
+        $userId = [
+            "user_id" => $user->id
+        ];
         $profile = Profile::findOrFail($user->profile_id);
-        $userData = array_merge($user->toArray(), $profile->toArray());
+        $userData = array_merge($userId, $user->toArray(), $profile->toArray());
         $token = JWTAuth::customClaims($userData)->fromUser($user);
         if (!$token) {
             return response()->json([

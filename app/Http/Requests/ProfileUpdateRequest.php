@@ -48,7 +48,11 @@ class ProfileUpdateRequest extends FormRequest
             "jabatan" => "string|nullable",
             "lama_bekerja" => "integer|nullable",
             "gaji" => "integer|nullable",
-            "deskripsi" => "string|nullable"
+            "deskripsi" => "string|nullable",
+            "profile" => "file|max:10240|nullable",
+            "photo.file" => "Inputan pada kolom photo harus berupa file",
+            "photo.required" => "Inputan pada kolom photo tidak boleh kosong",
+            "photo.max" => "Inputan pada kolom image tidak boleh lebih dari 10MB",
         ];
     }
 
