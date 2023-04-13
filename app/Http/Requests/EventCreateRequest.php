@@ -36,11 +36,11 @@ class EventCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "user_id" => "integer|required",
-            "nama" => "string|required",
-            "url" => "string|required",
-            "image" => "file|max:10240|mimes:jpeg,jpg,png,gif|required",
-            "type" => "string|in:LOKER,MAGANG,BEASISWA|required"
+            "user_id" => "required|integer",
+            "nama" => "required|string",
+            "url" => "required|string",
+            "image" => "required|file|max:10240|mimes:jpeg,jpg,png,gif",
+            "type" => "required|string|in:LOKER,MAGANG,BEASISWA"
         ];
     }
 
