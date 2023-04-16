@@ -1,68 +1,41 @@
 version: "3.8"
 
-# services
 services:
-    # nginx service
-    nginx:
-        image: nginx
-        ports:
-            - 80:80
-        volumes:
-            - ./:/var/www/html
-            - ./.docker/nginx/conf.d:/etc/nginx/conf.d
-        depends_on:
-            - php
-
-    php:
+    app:
         build:
-            context: ./dockerfiles
-            dockerfile: php/Dockerfile
-        working_dir: /var/www/html
+            context: .
+            dockerfile: Dockerfile
+        container_name: my-laravel-app
         restart: unless-stopped
         ports:
-            - 9001:9000
-        volumes:
-            - ./:/var/www/html
-            - ./php.ini:/usr/local/etc/php/php.ini
-
-    phpmyadmin:
-        image: phpmyadmin
-        links:
-            - mysql
+            - "8080:80"
         environment:
-            PMA_HOST: mysql
-            PMA_PORT: 3306
-            PMA_ARBITRARY: 1
-        restart: unless-stopped
-        ports:
-            - 8081:80
+            DB_HOST: db
+            DB_DATABASE: my_database
+            DB_USERNAME: my_user
+            DB_PASSWORD: my_password
         volumes:
-            - ./:/var/lib/phpmyadmin
+            - .:/var/www/html
+        networks:
+            - app-network
 
-    mysql:
-        image: mariadb
+    db:
+        image: mysql:8.0
+        container_name: my-mysql-db
         restart: unless-stopped
-        tty: true
-        ports:
-            - 3307:3306
         environment:
-            MYSQL_USER: dev
-            MYSQL_PASSWORD: secret
-            MYSQL_ROOT_PASSWORD: secret
-            SERVICE_TAGS: dev
-            SERVICE_NAME: mysql
+            MYSQL_ROOT_PASSWORD: my_root_password
+            MYSQL_DATABASE: my_database
+            MYSQL_USER: my_user
+            MYSQL_PASSWORD: my_password
         volumes:
-            - ./data/mysql:/var/lib/mysql/data
+            - mysql-data:/var/lib/mysql
+        networks:
+            - app-network
 
-    redis:
-        image: redis:latest
-        restart: unless-stopped
-        ports:
-            - 6379:6379
+volumes:
+    mysql-data:
 
-    mailhog:
-        image: mailhog/mailhog
-        restart: unless-stopped
-        ports:
-            - 1025:1025
-            - 8025:8025
+networks:
+    app-network:
+        driver: bridge
