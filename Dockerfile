@@ -1,46 +1,34 @@
-FROM ubuntu:20.04
+FROM php:8.1-fpm
 
 RUN apt-get update && \
-    apt-get install -y software-properties-common && \
-    add-apt-repository -y ppa:ondrej/php && \
-    apt-get update
+    apt-get install -y \
+        libpng-dev \
+        libonig-dev \
+        libxml2-dev \
+        zip \
+        unzip \
+        git \
+        curl \
+        libzip-dev \
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip \
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+    && pecl install xdebug \
+    && docker-php-ext-enable xdebug \
+    && echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.client_host=host.docker.internal" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.client_port=9000" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "upload_max_filesize=50M" >> /usr/local/etc/php/conf.d/uploads.ini \
+    && echo "post_max_size=50M" >> /usr/local/etc/php/conf.d/uploads.ini
 
-# Update and install necessary packages
-RUN apt-get update && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y \
-    nginx \
-    php8.1 \
-    php8.1-cli \
-    php8.1-common \
-    php8.1-curl \
-    php8.1-fpm \
-    php8.1-gd \
-    php8.1-mbstring \
-    php8.1-mysql \
-    php8.1-pgsql \
-    php8.1-xml \
-    php8.1-zip \
-    composer \
-    supervisor \
-    curl \
-    git \
-    unzip \
-    && rm -rf /var/lib/apt/lists/*
-
-# Set timezone
-RUN ln -snf /usr/share/zoneinfo/Asia/Jakarta /etc/localtime && echo Asia/Jakarta > /etc/timezone
-
-# Configure Nginx
-COPY ./.docker/nginx/default.conf /etc/nginx/sites-available/default
-RUN ln -sf /dev/stdout /var/log/nginx/access.log && ln -sf /dev/stderr /var/log/nginx/error.log
+WORKDIR /var/www/html
 
 # Copy source files
 WORKDIR /var/www/html
 COPY . /var/www/html
 
-# RUN service mysql start && \
-#     mysql -e "CREATE DATABASE study-tracer"
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN service mysql start && \
+    mysql -e "CREATE DATABASE study-tracer"
 
 # Install dependencies
 RUN composer install --no-dev --no-scripts --no-progress --prefer-dist && \
