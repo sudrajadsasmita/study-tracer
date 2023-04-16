@@ -36,9 +36,8 @@ RUN composer install --no-dev --no-scripts --no-progress --prefer-dist && \
     php artisan config:clear
 
 # Configure supervisord
-COPY ./.docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-RUN mkdir /var/log/mysql
+WORKDIR /var/www/html
 
-EXPOSE 80
+CMD ["php-fpm"]
 
-CMD ["/usr/bin/supervisord -c"]
+EXPOSE 9000
