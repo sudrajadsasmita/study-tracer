@@ -1,43 +1,37 @@
-FROM php:8.1-fpm
+# Base image
+FROM ubuntu:20.04
 
-RUN apt-get update && \
-    apt-get install -y \
-        libpng-dev \
-        libonig-dev \
-        libxml2-dev \
-        zip \
-        unzip \
-        git \
-        curl \
-        libzip-dev \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip \
-    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
-    && pecl install xdebug \
-    && docker-php-ext-enable xdebug \
-    && echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
-    && echo "xdebug.client_host=host.docker.internal" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
-    && echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
-    && echo "xdebug.client_port=9000" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
-    && echo "upload_max_filesize=50M" >> /usr/local/etc/php/conf.d/uploads.ini \
-    && echo "post_max_size=50M" >> /usr/local/etc/php/conf.d/uploads.ini
+# Update packages
+RUN apt-get update && apt-get -y upgrade
 
-WORKDIR /var/www/html
+# Install Nginx, PHP and other required packages
+RUN apt-get -y install nginx curl unzip git supervisor php-fpm php-mysql php-redis php-mbstring php-zip php-gd php-xml php-curl
 
-# Copy source files
-WORKDIR /var/www/html
+# Install composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Copy nginx and php config files
+COPY .docker/nginx.conf /etc/nginx/nginx.conf
+COPY .docker/default.conf /etc/nginx/sites-available/default
+COPY .docker/www.conf /etc/php/7.4/fpm/pool.d/www.conf
+COPY .docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# Copy application files
 COPY . /var/www/html
 
-# RUN service mysql start && \
-#     mysql -e "CREATE DATABASE study-tracer"
+# Install dependencies and set file permissions
+RUN cd /var/www/html && \
+    composer install --optimize-autoloader --no-dev && \
+    chown -R www-data:www-data /var/www/html && \
+    chmod -R 755 /var/www/html/storage && \
+    chmod -R 755 /var/www/html/bootstrap/cache && \
+    php artisan config:cache && \
+    php artisan route:cache && \
+    php artisan view:cache && \
+    php artisan optimize
 
-# Install dependencies
-RUN composer install --no-dev --no-scripts --no-progress --prefer-dist && \
-    php artisan cache:clear && \
-    php artisan config:clear
+# Expose ports
+EXPOSE 80
 
-# Configure supervisord
-WORKDIR /var/www/html
-
-CMD ["php-fpm"]
-
-EXPOSE 9000
+# Start services
+CMD ["/usr/bin/supervisord"]

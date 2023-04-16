@@ -1,40 +1,39 @@
 version: "3"
 services:
-    nginx:
-        image: nginx:latest
+    app:
+        image: registry.render.com/username/appname:latest
+        deploy:
+            replicas: 1
+            restart_policy:
+                condition: any
+            resources:
+                limits:
+                    memory: 2G
         ports:
             - "80:80"
-        volumes:
-            - ./.docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
-            - .:/var/www/html
-        depends_on:
-            - php
-    php:
-        build:
-            context: .
-            dockerfile: Dockerfile
-        volumes:
-            - .:/var/www/html
-            - ./php.ini:/usr/local/etc/php/conf.d/php.ini
+        environment:
+            DB_HOST: db
+            DB_PORT: 3306
+            DB_DATABASE: study-tracer
+            DB_USERNAME: sds
+            DB_PASSWORD: secret
+            REDIS_HOST: redis
+            REDIS_PASSWORD: redis_password
         depends_on:
             - db
+            - redis
     db:
-        image: mysql:latest
+        image: mysql:8.0
+        command: --default-authentication-plugin=mysql_native_password
         environment:
+            MYSQL_ROOT_PASSWORD: secret
             MYSQL_DATABASE: study-tracer
-            MYSQL_USER: laravel
+            MYSQL_USER: sds
             MYSQL_PASSWORD: secret
-            MYSQL_ROOT_PASSWORD: secret
         volumes:
-            - dbdata:/var/lib/mysql
-    phpmyadmin:
-        image: phpmyadmin:latest
-        environment:
-            PMA_HOST: db
-            MYSQL_ROOT_PASSWORD: secret
-        ports:
-            - "8080:80"
-        depends_on:
-            - db
+            - db-data:/var/lib/mysql
+    redis:
+        image: redis:alpine
+        command: redis-server --requirepass redis_password
 volumes:
-    dbdata:
+    db-data:
