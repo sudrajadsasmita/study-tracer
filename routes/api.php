@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth:api'])->group(function () {
     Route::resource('profile', ProfileController::class);
+    Route::put('profile/{profile}/photo', [ProfileController::class, 'updatePhoto']);
     Route::resource('event', EventController::class);
     Route::post('/logout', [AuthController::class, "logout"]);
 });

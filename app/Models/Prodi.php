@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Prodi extends Model
@@ -21,5 +22,15 @@ class Prodi extends Model
     public function profiles(): HasMany
     {
         return $this->hasMany(Profile::class, 'profile_id', 'id');
+    }
+
+    /**
+     * Get the user that owns the Prodi
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function faculty(): BelongsTo
+    {
+        return $this->belongsTo(Faculty::class, 'faculty_id', 'id');
     }
 }

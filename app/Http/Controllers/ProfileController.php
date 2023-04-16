@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileCreateRequest;
+use App\Http\Requests\ProfileUpdatePhotoRequest;
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Models\Profile;
 use Illuminate\Http\Request;
@@ -17,9 +18,9 @@ class ProfileController extends Controller
     {
         try {
             if ($request->status_bekerja != null) {
-                $profile = Profile::statusBekerja(statusBekerja: $request->status_bekerja)->get();
+                $profile = Profile::with(["prodi.faculty"])->statusBekerja(statusBekerja: $request->status_bekerja)->get();
             } else {
-                $profile = Profile::all();
+                $profile = Profile::with(["prodi.faculty"])->get();
             }
             return $this->sendResponse(result: $profile, message: "fetch data successful...");
         } catch (\Exception $e) {
@@ -51,8 +52,33 @@ class ProfileController extends Controller
     public function show($id)
     {
         try {
-            $data = Profile::findOrFail($id)->first();
+            $data = Profile::where('id', '=', $id)->with(["prodi.faculty"])->first();
             return $this->sendResponse(result: $data, message: "fetch data successful...");
+        } catch (\Exception $e) {
+            return $this->sendError(error: $e->getMessage());
+        }
+    }
+
+    public function updatePhoto(ProfileUpdatePhotoRequest $request, $id)
+    {
+        $data = $request->validated();
+        try {
+            $profile = Profile::findOrFail($id);
+            if (isset($data["photo"])) {
+                if ($profile->photo != null) {
+                    $path = str_replace(asset(''), '', $profile->photo);
+                    File::delete($path);
+                }
+                $path = $data["photo"]->store(
+                    "assets/file/profile/$profile->nim",
+                    'public'
+                );
+                $data["photo"] = $path;
+                $profile->update($data);
+                return $this->sendResponse(result: $profile, message: "update data successful...");
+            } else {
+                return $this->sendResponse(result: $data, message: "update data successful...");
+            }
         } catch (\Exception $e) {
             return $this->sendError(error: $e->getMessage());
         }
@@ -74,7 +100,7 @@ class ProfileController extends Controller
                     "assets/file/profile/$profile->nim",
                     'public'
                 );
-                $data["image"] = $path;
+                $data["photo"] = $path;
             }
             $profile->update($data);
             return $this->sendResponse(result: $profile, message: "update data successful...");
@@ -91,7 +117,6 @@ class ProfileController extends Controller
         try {
             $path = str_replace(asset(''), '', $profile->photo);
             File::delete($path);
-            File::delete($profile->photo);
             $data = $profile->delete();
             return $this->sendResponse(result: $data, message: "delete data successful...");
         } catch (\Exception $e) {

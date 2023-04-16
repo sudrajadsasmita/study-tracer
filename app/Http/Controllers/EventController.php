@@ -16,10 +16,19 @@ class EventController extends Controller
     public function index(Request $request)
     {
         try {
+            $search = $request->search;
             if ($request->user_id != null) {
-                $event = Event::userId(userId: $request->user_id)->get();
+                if ($request->type != null) {
+                    $event = Event::userId(userId: $request->user_id)->type(type: $request->type)->where('nama', 'LIKE', '%' . $search . '%')->get();
+                } else {
+                    $event = Event::userId(userId: $request->user_id)->where('nama', 'LIKE', '%' . $search . '%')->get();
+                }
             } else {
-                $event = Event::all();
+                if ($request->type != null) {
+                    $event = Event::type(type: $request->type)->where('nama', 'LIKE', '%' . $search . '%')->get();
+                } else {
+                    $event = Event::where('nama', 'LIKE', '%' . $search . '%')->get();
+                }
             }
             return $this->sendResponse(result: $event, message: "fetch data successful...");
         } catch (\Exception $e) {

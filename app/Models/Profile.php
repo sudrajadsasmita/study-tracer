@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Storage;
 
 class Profile extends Model
 {
@@ -24,9 +26,16 @@ class Profile extends Model
         "jabatan",
         "lama_bekerja",
         "gaji",
-        "deskripsi"
+        "deskripsi",
+        "photo"
     ];
 
+    public function photo(): Attribute
+    {
+        return new Attribute(
+            get: fn ($value) => url(Storage::url($value)),
+        );
+    }
 
     public function scopeStatusBekerja(Builder $query, String $statusBekerja): Builder
     {

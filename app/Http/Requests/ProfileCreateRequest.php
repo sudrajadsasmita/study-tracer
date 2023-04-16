@@ -49,7 +49,7 @@ class ProfileCreateRequest extends FormRequest
             "lama_bekerja" => "integer|nullable",
             "gaji" => "integer|nullable",
             "deskripsi" => "string|nullable",
-            "profile" => "file|max:10240|nullable",
+            "photo" => "file|max:10240|nullable",
 
         ];
     }
