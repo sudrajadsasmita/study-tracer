@@ -53,4 +53,4 @@ RUN mkdir /var/log/mysql
 
 EXPOSE 80
 
-CMD ["/usr/bin/supervisord"]
+CMD ["/usr/bin/supervisord -c"]
