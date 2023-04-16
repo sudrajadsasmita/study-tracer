@@ -11,9 +11,9 @@ services:
             - "8080:80"
         environment:
             DB_HOST: db
-            DB_DATABASE: my_database
-            DB_USERNAME: my_user
-            DB_PASSWORD: my_password
+            DB_DATABASE: study-tracer
+            DB_USERNAME: root
+            DB_PASSWORD: secret
         volumes:
             - .:/var/www/html
         networks:
@@ -24,10 +24,10 @@ services:
         container_name: my-mysql-db
         restart: unless-stopped
         environment:
-            MYSQL_ROOT_PASSWORD: my_root_password
-            MYSQL_DATABASE: my_database
-            MYSQL_USER: my_user
-            MYSQL_PASSWORD: my_password
+            MYSQL_ROOT_PASSWORD: secret
+            MYSQL_DATABASE: study-tracer
+            MYSQL_USER: personal
+            MYSQL_PASSWORD: secret
         volumes:
             - mysql-data:/var/lib/mysql
         networks:
