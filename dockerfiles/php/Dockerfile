@@ -32,6 +32,11 @@ RUN docker-php-ext-install \
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
+COPY .env.example /var/www/.env
+RUN chmod 777 -R /var/www/storage/ && \
+    echo "Listen 8080" >> /etc/apache2/ports.conf && \
+    chown -R www-data:www-data /var/www/ && \
+    a2enmod rewrite
 
 
 WORKDIR /var/www/html
