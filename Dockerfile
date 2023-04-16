@@ -40,6 +40,7 @@ COPY . /var/www/html
 
 # RUN service mysql start && \
 #     mysql -e "CREATE DATABASE study-tracer"
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Install dependencies
 RUN composer install --no-dev --no-scripts --no-progress --prefer-dist && \
