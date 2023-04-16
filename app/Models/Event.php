@@ -34,6 +34,11 @@ class Event extends Model
         return $query->where('user_id', '=', $userId);
     }
 
+    public function scopeType(Builder $query, String $type)
+    {
+        return $query->where('type', '=', $type);
+    }
+
     /**
      * Get the user that owns the Event
      *

@@ -39,7 +39,7 @@ class EventUpdateRequest extends FormRequest
             "user_id" => "integer|required",
             "nama" => "string|required",
             "url" => "string|required",
-            "image" => "file|max:2024|required",
+            "image" => "file|max:10240|nullable",
             "type" => "string|in:LOKER,MAGANG,BEASISWA|required"
         ];
     }
@@ -55,7 +55,7 @@ class EventUpdateRequest extends FormRequest
             "url.required" => "Inputan pada kolom url tidak boleh kosong",
             "image.file" => "Inputan pada kolom image harus berupa file",
             "image.required" => "Inputan pada kolom image tidak boleh kosong",
-            "image.max" => "Inputan pada kolom image tidak boleh lebih dari 2MB",
+            "image.max" => "Inputan pada kolom image tidak boleh lebih dari 10MB",
             "type.string" => "Inputan pada kolom type harus berupa huruf",
             "type.required" => "Inputan pada kolom type tidak boleh kosong",
             "type.in" => "Inputan pada kolom harus loker, magang atau beasiswa",

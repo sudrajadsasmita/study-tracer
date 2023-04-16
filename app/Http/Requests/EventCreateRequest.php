@@ -36,11 +36,11 @@ class EventCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "user_id" => "integer|required",
-            "nama" => "string|required",
-            "url" => "string|required",
-            "image" => "file|max:2024|required",
-            "type" => "string|in:LOKER,MAGANG,BEASISWA|required"
+            "user_id" => "required|integer",
+            "nama" => "required|string",
+            "url" => "required|string",
+            "image" => "required|file|max:10240|mimes:jpeg,jpg,png,gif",
+            "type" => "required|string|in:LOKER,MAGANG,BEASISWA"
         ];
     }
 
@@ -55,10 +55,11 @@ class EventCreateRequest extends FormRequest
             "url.required" => "Inputan pada kolom url tidak boleh kosong",
             "image.file" => "Inputan pada kolom image harus berupa file",
             "image.required" => "Inputan pada kolom image tidak boleh kosong",
-            "image.max" => "Inputan pada kolom image tidak boleh lebih dari 2MB",
+            "image.max" => "Inputan pada kolom image tidak boleh lebih dari 10MB",
             "type.string" => "Inputan pada kolom type harus berupa huruf",
             "type.required" => "Inputan pada kolom type tidak boleh kosong",
             "type.in" => "Inputan pada kolom harus loker, magang atau beasiswa",
+
         ];
     }
 }

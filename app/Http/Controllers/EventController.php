@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\EventCreateRequest;
+use App\Http\Requests\EventUpdateRequest;
 use App\Models\Event;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class EventController extends Controller
 {
@@ -14,10 +16,19 @@ class EventController extends Controller
     public function index(Request $request)
     {
         try {
+            $search = $request->search;
             if ($request->user_id != null) {
-                $event = Event::userId(userId: $request->user_id)->get();
+                if ($request->type != null) {
+                    $event = Event::userId(userId: $request->user_id)->type(type: $request->type)->where('nama', 'LIKE', '%' . $search . '%')->get();
+                } else {
+                    $event = Event::userId(userId: $request->user_id)->where('nama', 'LIKE', '%' . $search . '%')->get();
+                }
             } else {
-                $event = Event::all();
+                if ($request->type != null) {
+                    $event = Event::type(type: $request->type)->where('nama', 'LIKE', '%' . $search . '%')->get();
+                } else {
+                    $event = Event::where('nama', 'LIKE', '%' . $search . '%')->get();
+                }
             }
             return $this->sendResponse(result: $event, message: "fetch data successful...");
         } catch (\Exception $e) {
@@ -67,11 +78,21 @@ class EventController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(EventUpdateRequest $request, $id)
     {
         $data = $request->validated();
+        // dd($data);
         try {
             $event = Event::findOrFail($id);
+            if (isset($data["image"])) {
+                $path = str_replace(asset(''), '', $event->image);
+                File::delete($path);
+                $path = $data["image"]->store(
+                    "assets/file/event/$event->type/$event->user_id",
+                    'public'
+                );
+                $data["image"] = $path;
+            }
             $event->update($data);
             return $this->sendResponse(result: $event, message: "update data successful...");
         } catch (\Exception $e) {
@@ -85,6 +106,8 @@ class EventController extends Controller
     public function destroy(Event $event)
     {
         try {
+            $path = str_replace(asset(''), '', $event->image);
+            File::delete($path);
             $data = $event->delete();
             return $this->sendResponse(result: $data, message: "delete data successful...");
         } catch (\Exception $e) {
