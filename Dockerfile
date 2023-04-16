@@ -38,8 +38,8 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log && ln -sf /dev/stderr /var/log/
 WORKDIR /var/www/html
 COPY . /var/www/html
 
-RUN service mysql start && \
-    mysql -e "CREATE DATABASE laravel"
+# RUN service mysql start && \
+#     mysql -e "CREATE DATABASE study-tracer"
 
 # Install dependencies
 RUN composer install --no-dev --no-scripts --no-progress --prefer-dist && \
