@@ -49,6 +49,7 @@ RUN composer install --no-dev --no-scripts --no-progress --prefer-dist && \
 
 # Configure supervisord
 COPY ./.docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+RUN mkdir /var/log/mysql
 
 EXPOSE 80
 
