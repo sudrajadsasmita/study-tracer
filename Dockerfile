@@ -5,7 +5,7 @@ FROM ubuntu:20.04
 RUN apt-get update && apt-get -y upgrade
 
 # Install Nginx, PHP and other required packages
-RUN DEBIAN_FRONTEND=noninteractive apt-get -y install nginx curl unzip git supervisor php-fpm php-mysql php-redis php-mbstring php-zip php-gd php-xml php-curl
+RUN DEBIAN_FRONTEND=noninteractive apt-get -y install nginx curl unzip git supervisor php8.0-fpm php-mysql php-redis php-mbstring php-zip php-gd php-xml php-curl
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
