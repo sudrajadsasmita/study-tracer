@@ -18,7 +18,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Copy nginx and php config files
 COPY .docker/nginx.conf /etc/nginx/nginx.conf
 COPY .docker/default.conf /etc/nginx/sites-available/default
-COPY .docker/www.conf /etc/php/8.1.1/fpm/pool.d/www.conf
+COPY .docker/www.conf /etc/php/8.1/fpm/pool.d/www.conf
 COPY .docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Copy application files
