@@ -4,12 +4,12 @@ FROM ubuntu:20.04
 # Update packages
 RUN apt-get update && apt-get -y upgrade
 
-RUN apt-get install -y apt-transport-https
+RUN apt-get install -y apt-transport-https software-properties-common
 
 # Install Nginx, PHP and other required packages
-RUN DEBIAN_FRONTEND=noninteractive apt-get -y install nginx curl unzip git supervisor php8.1.1-fpm php-mysql php-redis php-mbstring php-zip php-gd php-xml php-curl
+RUN DEBIAN_FRONTEND=noninteractive apt-get -y install nginx curl unzip git supervisor php8.0 php-mysql php-redis php-mbstring php-zip php-gd php-xml php-curl
 # Install composer
-RUN curl -sS https://getcomposer.org/installer | php8.1.1 -- --install-dir=/usr/local/bin --filename=composer
+RUN curl -sS https://getcomposer.org/installer | php8.0 -- --install-dir=/usr/local/bin --filename=composer
 
 # Copy nginx and php config files
 COPY .docker/nginx.conf /etc/nginx/nginx.conf
@@ -26,10 +26,10 @@ RUN cd /var/www/html && \
     chown -R www-data:www-data /var/www/html && \
     chmod -R 755 /var/www/html/storage && \
     chmod -R 755 /var/www/html/bootstrap/cache && \
-    php8.1.1 artisan config:cache && \
-    php8.1.1 artisan route:cache && \
-    php8.1.1 artisan view:cache && \
-    php8.1.1 artisan optimize
+    php8.0 artisan config:cache && \
+    php8.0 artisan route:cache && \
+    php8.0 artisan view:cache && \
+    php8.0 artisan optimize
 
 # Expose ports
 EXPOSE 80
