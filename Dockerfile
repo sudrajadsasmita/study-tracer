@@ -4,6 +4,8 @@ FROM ubuntu:20.04
 # Update packages
 RUN apt-get update && apt-get -y upgrade
 
+RUN apt-get install -y apt-transport-https
+
 # Install Nginx, PHP and other required packages
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install nginx curl unzip git supervisor php8.1.1-fpm php-mysql php-redis php-mbstring php-zip php-gd php-xml php-curl
 # Install composer
