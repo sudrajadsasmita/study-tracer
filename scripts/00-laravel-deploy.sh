@@ -6,17 +6,11 @@ echo "Running composer"
 composer global require hirak/prestissimo
 composer install --no-dev --working-dir=/var/www/html
 
-echo "Key Generate..."
-php artisan key:generate
-
 echo "Caching config..."
 php artisan config:cache
 
 echo "Caching routes..."
 php artisan route:cache
-
-echo "Running migrate..."
-php artisan migrate
 
 echo "Running storage link"
 php artisan storage:link
