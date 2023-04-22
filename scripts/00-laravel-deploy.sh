@@ -15,5 +15,9 @@ php artisan config:cache
 echo "Caching routes..."
 php artisan route:cache
 
+echo "Running migrate..."
+php artisan migrate
+
 echo "Running storage link"
 php artisan storage:link
+
