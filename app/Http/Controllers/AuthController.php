@@ -6,9 +6,11 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\Profile;
 use App\Models\User;
+use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use PHPOpenSourceSaver\JWTAuth\Exceptions\JWTException;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
@@ -54,7 +56,22 @@ class AuthController extends Controller
     {
         $credentials = $request->only('username', 'password');
 
-        JWTAuth::attempt($credentials);
+        try {
+            // Attempt to verify the credentials and create a token for the user
+            if (!$token = JWTAuth::attempt($credentials)) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Unauthorized',
+                ], Response::HTTP_UNAUTHORIZED);
+            }
+        } catch (JWTException $e) {
+            // Something went wrong while attempting to generate a token
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Internal Server Error',
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+        // Get the authenticated user
         $user = JWTAuth::user();
         $userId = [
             "user_id" => $user->id
@@ -62,13 +79,6 @@ class AuthController extends Controller
         $profile = Profile::findOrFail($user->profile_id);
         $userData = array_merge($userId, $user->toArray(), $profile->toArray());
         $token = JWTAuth::customClaims($userData)->fromUser($user);
-        if (!$token) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Unauthorized',
-            ], 401);
-        }
-
         return response()->json([
             'status' => 'success',
             'authorization' => [
