@@ -42,7 +42,7 @@ class ProfileUpdateRequest extends FormRequest
             "ipk" => "numeric|required",
             "tahun_masuk" => "date_format:Y|required",
             "tahun_lulus" => "date_format:Y|required",
-            "status_bekerja" => "string|in:YA,TIDAK|required",
+            "status_bekerja" => "string|in:YA,TIDAK|nullable",
             "saran_prodi" => "string|nullable",
             "alamat_perusahaan" => "string|nullable",
             "jabatan" => "string|nullable",
