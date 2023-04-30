@@ -36,6 +36,16 @@ class EventController extends Controller
         }
     }
 
+    public function getNewFiveEvent()
+    {
+        try {
+            $event  = Event::latest()->limit(5)->get();
+            return $this->sendResponse(result: $event, message: "fetch data successful...");
+        } catch (\Exception $e) {
+            return $this->sendError(error: $e->getMessage());
+        }
+    }
+
     /**
      * Store a newly created resource in storage.
      */

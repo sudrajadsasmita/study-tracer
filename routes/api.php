@@ -21,9 +21,10 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::middleware(['auth:api'])->group(function () {
-    Route::resource('profile', ProfileController::class);
+    Route::apiResource('profile', ProfileController::class);
     Route::put('profile/{profile}/photo', [ProfileController::class, 'updatePhoto']);
-    Route::resource('event', EventController::class);
+    Route::apiResource('event', EventController::class);
+    Route::get('/get-new/event', [EventController::class, "getNewFiveEvent"]);
     Route::post('/logout', [AuthController::class, "logout"]);
 });
 
