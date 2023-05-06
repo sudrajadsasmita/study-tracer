@@ -14,9 +14,9 @@ class ProdiController extends Controller
     {
         try {
             $prodi = Prodi::with(["faculty"])->get();
-            $this->sendResponse(result: $prodi, message: "Fetch data successfully...");
+            return $this->sendResponse(result: $prodi, message: "Fetch data successfully...");
         } catch (\Exception $e) {
-            $this->sendError(error: $e->getMessage());
+            return $this->sendError(error: $e->getMessage());
         }
     }
 
