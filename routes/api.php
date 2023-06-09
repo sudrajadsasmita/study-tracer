@@ -28,12 +28,12 @@ Route::middleware(['auth:api'])->group(function () {
     Route::apiResource('/profile', ProfileController::class);
     Route::put('/profile/{profile}/photo', [ProfileController::class, 'updatePhoto']);
     Route::apiResource('/event', EventController::class);
-    Route::apiResource('/faculty', FacultyController::class);
     Route::get('/get-new/event', [EventController::class, "getNewFiveEvent"]);
-    Route::get('/prodi/{faculty_id}/faculty', [ProdiController::class, "getByFaculty"]);
-    Route::apiResource('/prodi', ProdiController::class);
     Route::post('/logout', [AuthController::class, "logout"]);
 });
+Route::apiResource('/faculty', FacultyController::class);
+Route::get('/prodi/{faculty_id}/faculty', [ProdiController::class, "getByFaculty"]);
+Route::apiResource('/prodi', ProdiController::class);
 
 Route::post('/register', [AuthController::class, "register"]);
 Route::post('/login', [AuthController::class, "login"]);
