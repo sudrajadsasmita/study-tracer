@@ -12,7 +12,12 @@ class FacultyController extends Controller
      */
     public function index()
     {
-        //
+        try {
+            $faculty = Faculty::all();
+            return $this->sendResponse(result: $faculty, message: "Fetch data successfully...");
+        } catch (\Exception $e) {
+            return $this->sendError(error: $e->getMessage());
+        }
     }
 
     /**
