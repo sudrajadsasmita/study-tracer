@@ -20,6 +20,16 @@ class ProdiController extends Controller
         }
     }
 
+    public function getByFaculty($id)
+    {
+        try {
+            $prodi = Prodi::where("faculty_id", "=", $id)->get();
+            return $this->sendResponse(result: $prodi, message: "Fetch data successfully...");
+        } catch (\Exception $e) {
+            return $this->sendError(error: $e->getMessage());
+        }
+    }
+
     /**
      * Show the form for creating a new resource.
      */
