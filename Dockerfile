@@ -10,7 +10,6 @@ COPY . /app
 
 RUN composer install && \
     touch .env && \
-    php artisan key:generate && \
     php artisan cache:clear && \
     php artisan config:clear && \
     php artisan storage:link
