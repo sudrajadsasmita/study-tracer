@@ -10,9 +10,10 @@ COPY . /app
 
 RUN composer install && \
     touch .env && \
+    echo "APP_KEY=$APP_KEY" >> .env && \
+    php artisan key:generate && \
     php artisan cache:clear && \
-    php artisan config:clear && \
-    php artisan storage:link
+    php artisan config:clear
 
 CMD ["chmod", "-R", "777", "storage/"]
 CMD ["chmod", "-R", "777", "bootstrap/"]
