@@ -1,20 +1,22 @@
-FROM richarvey/nginx-php-fpm:latest
+FROM php:8.1-cli
 
-COPY . .
+RUN apt-get update -y && apt-get install -y libmcrypt-dev git openssl zip unzip
 
-# Image config
-ENV SKIP_COMPOSER 1
-ENV WEBROOT /var/www/html/public
-ENV PHP_ERRORS_STDERR 1
-ENV RUN_SCRIPTS 1
-ENV REAL_IP_HEADER 1
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN docker-php-ext-install pdo
 
-# Laravel config
-ENV APP_ENV production
-ENV APP_DEBUG false
-ENV LOG_CHANNEL stderr
+WORKDIR /app
+COPY . /app
 
-# Allow composer to run as root
-ENV COMPOSER_ALLOW_SUPERUSER 1
+RUN composer install && \
+    php artisan key:generate && \
+    php artisan cache:clear && \
+    php artisan config:clear && \
+    php artisan storage:link && \
+    chmod -R 777 storage/ && \
+    chmod -R 777 bootstrap/
+    
 
-CMD ["/start.sh"]
+CMD [ "php", "artisan", "serve", "--host=0.0.0.0", "--port=80" ]
+
+EXPOSE 80
