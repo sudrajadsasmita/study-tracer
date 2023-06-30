@@ -14,8 +14,9 @@ RUN composer install && \
     php artisan key:generate && \
     php artisan cache:clear && \
     php artisan config:clear && \
-    php artisan storage:link && \
-    chmod -R 777 storage/ && \
+    php artisan storage:link
+
+RUN chmod -R 777 storage/ && \
     chmod -R 777 bootstrap/
     
 
