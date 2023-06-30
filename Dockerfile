@@ -16,8 +16,8 @@ RUN composer install && \
     php artisan config:clear && \
     php artisan storage:link
 
-RUN chmod -R 777 storage/ && \
-    chmod -R 777 bootstrap/
+CMD ["chmod", "-R", "777", "storage/"]
+CMD ["chmod", "-R", "777", "bootstrap/"]
     
 
 CMD [ "php", "artisan", "serve", "--host=0.0.0.0", "--port=80" ]
