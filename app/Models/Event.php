@@ -25,7 +25,7 @@ class Event extends Model
     public function image(): Attribute
     {
         return new Attribute(
-            get: fn ($value) => url(Storage::url($value)),
+            get: fn ($value) => url($value),
         );
     }
 
