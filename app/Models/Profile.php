@@ -33,7 +33,7 @@ class Profile extends Model
     public function photo(): Attribute
     {
         return new Attribute(
-            get: fn ($value) => url(Storage::url($value)),
+            get: fn ($value) => url($value),
         );
     }
 

@@ -7,6 +7,7 @@ use App\Http\Requests\EventUpdateRequest;
 use App\Models\Event;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 
 class EventController extends Controller
 {
@@ -53,16 +54,14 @@ class EventController extends Controller
     {
         $item = $request->validated();
         try {
-            $path = $item["image"]->store(
-                "assets/file/event/$item[type]/$item[user_id]",
-                'public'
-
-            );
+            $imageName = time() . '.' . $item["image"]->getClientOriginalExtension();
+            $path = "assets/file/event/$item[type]/$item[user_id]";
+            $item["image"]->move(public_path($path), $imageName);
             $data = [
                 "user_id" => $item["user_id"],
                 "nama" => $item["nama"],
                 "url" => $item["url"],
-                "image" => $path,
+                "image" => $path . "/" . $imageName,
                 "type" => $item["type"]
             ];
             $event = Event::create($data);
@@ -91,17 +90,16 @@ class EventController extends Controller
     public function update(EventUpdateRequest $request, $id)
     {
         $data = $request->validated();
-        // dd($data);
         try {
             $event = Event::findOrFail($id);
             if (isset($data["image"])) {
-                $path = str_replace(asset(''), '', $event->image);
-                File::delete($path);
-                $path = $data["image"]->store(
-                    "assets/file/event/$event->type/$event->user_id",
-                    'public'
-                );
-                $data["image"] = $path;
+                $existPath = Str::replace(url(""), '', $event->image);
+                File::delete(public_path($existPath));
+                $imageName = time() . '.' . $data["image"]->getClientOriginalExtension();
+                $path = "assets/file/event/$event->type/$event->user_id";
+                $data["image"]->move(public_path($path), $imageName);
+
+                $data["image"] = $path . "/" . $imageName;
             }
             $event->update($data);
             return $this->sendResponse(result: $event, message: "update data successful...");
