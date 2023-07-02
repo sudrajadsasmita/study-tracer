@@ -8,6 +8,7 @@ use App\Http\Requests\ProfileUpdateRequest;
 use App\Models\Profile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 
 class ProfileController extends Controller
 {
@@ -65,15 +66,15 @@ class ProfileController extends Controller
         try {
             $profile = Profile::findOrFail($id);
             if (isset($data["photo"])) {
+                $imageName = time() . '.' . $data["photo"]->getClientOriginalExtension();
                 if ($profile->photo != null) {
-                    $path = str_replace(asset(''), '', $profile->photo);
-                    File::delete($path);
+                    $existPath = Str::replace(url(""), '', $profile->photo);
+                    File::delete(public_path($existPath));
                 }
-                $path = $data["photo"]->store(
-                    "assets/file/profile/$profile->nim",
-                    'public'
-                );
-                $data["photo"] = $path;
+                $path = "assets/file/profile/$profile->nim";
+
+                $data["photo"]->move(public_path($path), $imageName);
+                $data["photo"] = $path . "/" . $imageName;
                 $profile->update($data);
                 return $this->sendResponse(result: $profile, message: "update data successful...");
             } else {
@@ -93,14 +94,15 @@ class ProfileController extends Controller
         try {
             $profile = Profile::findOrFail($id);
             if (isset($data["photo"])) {
-                $path = str_replace(asset(''), '', $profile->photo);
+                $imageName = time() . '.' . $data["photo"]->getClientOriginalExtension();
+                if ($profile->photo != null) {
+                    $existPath = Str::replace(url(""), '', $profile->photo);
+                    File::delete(public_path($existPath));
+                }
+                $path = "assets/file/profile/$profile->nim";
 
-                File::delete($profile->photo);
-                $path = $data["photo"]->store(
-                    "assets/file/profile/$profile->nim",
-                    'public'
-                );
-                $data["photo"] = $path;
+                $data["photo"]->move(public_path($path), $imageName);
+                $data["photo"] = $path . "/" . $imageName;
             }
             $profile->update($data);
             return $this->sendResponse(result: $profile, message: "update data successful...");
