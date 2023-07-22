@@ -24,6 +24,7 @@ class AuthController extends Controller
             "ipk" => $request->ipk,
             "tahun_masuk" => $request->tahun_masuk,
             "tahun_lulus" => $request->tahun_lulus,
+            "role" => "USER"
         ];
         $profile = Profile::create($dataProfile);
         $user = User::create([
@@ -66,6 +67,7 @@ class AuthController extends Controller
             }
         } catch (JWTException $e) {
             // Something went wrong while attempting to generate a token
+            // throw $e;
             return response()->json([
                 'status' => 'error',
                 'message' => 'Internal Server Error',

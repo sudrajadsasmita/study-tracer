@@ -27,13 +27,14 @@ class Profile extends Model
         "lama_bekerja",
         "gaji",
         "deskripsi",
-        "photo"
+        "photo",
+        "role"
     ];
 
     public function photo(): Attribute
     {
         return new Attribute(
-            get: fn ($value) => url('/').$value,
+            get: fn ($value) => url('/') . $value,
         );
     }
 

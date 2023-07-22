@@ -18,17 +18,21 @@ class EventController extends Controller
     {
         try {
             $search = $request->search;
-            if ($request->user_id != null) {
-                if ($request->type != null) {
-                    $event = Event::userId(userId: $request->user_id)->type(type: $request->type)->where('nama', 'LIKE', '%' . $search . '%')->get();
-                } else {
-                    $event = Event::userId(userId: $request->user_id)->where('nama', 'LIKE', '%' . $search . '%')->get();
-                }
+            if ($request->role == "ADMIN") {
+                $event = Event::all();
             } else {
-                if ($request->type != null) {
-                    $event = Event::type(type: $request->type)->where('nama', 'LIKE', '%' . $search . '%')->get();
+                if ($request->user_id != null) {
+                    if ($request->type != null) {
+                        $event = Event::userId(userId: $request->user_id)->type(type: $request->type)->where('nama', 'LIKE', '%' . $search . '%')->get();
+                    } else {
+                        $event = Event::userId(userId: $request->user_id)->where('nama', 'LIKE', '%' . $search . '%')->get();
+                    }
                 } else {
-                    $event = Event::where('nama', 'LIKE', '%' . $search . '%')->get();
+                    if ($request->type != null) {
+                        $event = Event::type(type: $request->type)->where('nama', 'LIKE', '%' . $search . '%')->get();
+                    } else {
+                        $event = Event::where('nama', 'LIKE', '%' . $search . '%')->get();
+                    }
                 }
             }
             return $this->sendResponse(result: $event, message: "fetch data successful...");

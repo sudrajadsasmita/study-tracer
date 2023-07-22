@@ -6,6 +6,8 @@ use App\Http\Requests\ProfileCreateRequest;
 use App\Http\Requests\ProfileUpdatePhotoRequest;
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Models\Profile;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Dompdf\Dompdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
@@ -19,9 +21,9 @@ class ProfileController extends Controller
     {
         try {
             if ($request->status_bekerja != null) {
-                $profile = Profile::with(["prodi.faculty"])->statusBekerja(statusBekerja: $request->status_bekerja)->get();
+                $profile = Profile::with(["prodi.faculty"])->statusBekerja(statusBekerja: $request->status_bekerja)->whereNotNull('nama')->get();
             } else {
-                $profile = Profile::with(["prodi.faculty"])->get();
+                $profile = Profile::with(["prodi.faculty"])->whereNotNull('nama')->get();
             }
             return $this->sendResponse(result: $profile, message: "fetch data successful...");
         } catch (\Exception $e) {
@@ -108,6 +110,27 @@ class ProfileController extends Controller
             return $this->sendResponse(result: $profile, message: "update data successful...");
         } catch (\Exception $e) {
             return $this->sendError(error: $e->getMessage());
+        }
+    }
+
+    public function exportPdf()
+    {
+        try {
+            $data = [
+                'title' => 'Welcome to ItSolutionStuff.com',
+                'date' => date('m/d/Y'),
+            ];
+            // dd($data);
+            $view = view('pdf');
+            $pdf = new Dompdf();
+            $pdf->setPaper('A$', 'landscape');
+            $pdf->loadHtml($view->render());
+
+            $pdf->render();
+
+            $pdf->stream('my-document.pdf');
+        } catch (\Throwable $th) {
+            throw $th;
         }
     }
 
