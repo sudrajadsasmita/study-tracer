@@ -115,23 +115,20 @@ class ProfileController extends Controller
 
     public function exportPdf()
     {
-        try {
-            $data = [
-                'title' => 'Welcome to ItSolutionStuff.com',
-                'date' => date('m/d/Y'),
-            ];
-            // dd($data);
-            $view = view('pdf');
-            $pdf = new Dompdf();
-            $pdf->setPaper('A$', 'landscape');
-            $pdf->loadHtml($view->render());
 
-            $pdf->render();
+        $users = Profile::with('users')->whereNotNull('nama')->get();
+        $view = view('pdf')->with([
+            "title" => "Report Alumni yang terdaftar",
+            "date" => date("m/d/Y"),
+            "users" => $users
+        ]);
+        $pdf = new Dompdf();
+        $pdf->setPaper('A4', 'landscape');
+        $pdf->loadHtml($view->render());
 
-            $pdf->stream('my-document.pdf');
-        } catch (\Throwable $th) {
-            throw $th;
-        }
+        $pdf->render();
+
+        $pdf->stream('my-document.pdf');
     }
 
     /**

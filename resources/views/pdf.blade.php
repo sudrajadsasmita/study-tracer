@@ -1,52 +1,78 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bootstrap 5 PDF Export</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <title>User Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        @media only screen and (max-width: 600px) {
+
+            th,
+            td {
+                padding: 5px;
+            }
+
+            .table-container {
+                overflow-x: scroll;
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <div class="container">
-        <h1 class="text-center">This is a Bootstrap 5 PDF Export</h1>
-        <table border="1">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Age</th>
-                    <th>Gender</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>John Doe</td>
-                    <td>25</td>
-                    <td>Male</td>
-                </tr>
-                <tr>
-                    <td>Jane Doe</td>
-                    <td>23</td>
-                    <td>Female</td>
-                </tr>
-                <tr>
-                    <td>Peter Smith</td>
-                    <td>30</td>
-                    <td>Male</td>
-                </tr>
-                <tr>
-                    <td>Sarah Jones</td>
-                    <td>28</td>
-                    <td>Female</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous">
-    </script>
+
+    <h1>{{ $title }}</h1>
+
+    <p>{{ $date }}</p>
+
+    <table>
+        <tr>
+            <th>No</th>
+            <th>Nama</th>
+            <th>NIM</th>
+            <th>Email</th>
+            <th>IPK</th>
+            <th>Tahun Masuk</th>
+            <th>Tahun Lulus</th>
+        </tr>
+        @foreach ($users as $user)
+            <tr>
+                <td>{{ $loop->iteration }}</td>
+                <td>{{ $user->nama }}</td>
+                <td>{{ $user->nim }}</td>
+                <td>{{ $user->users[0]->email }}</td>
+                <td>{{ $user->ipk }}</td>
+                <td>{{ $user->tahun_masuk }}</td>
+                <td>{{ $user->tahun_lulus }}</td>
+            </tr>
+        @endforeach
+    </table>
 
 </body>
 
