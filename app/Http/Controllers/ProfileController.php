@@ -21,9 +21,9 @@ class ProfileController extends Controller
     {
         try {
             if ($request->status_bekerja != null) {
-                $profile = Profile::with(["prodi.faculty"])->statusBekerja(statusBekerja: $request->status_bekerja)->whereNotNull('nama')->get();
+                $profile = Profile::with(["prodi.faculty"])->statusBekerja(statusBekerja: $request->status_bekerja)->whereNotNull('nama')->where('username', '!=', 'superadmin')->get();
             } else {
-                $profile = Profile::with(["prodi.faculty"])->whereNotNull('nama')->get();
+                $profile = Profile::with(["prodi.faculty"])->whereNotNull('nama')->where('username', '!=', 'superadmin')->get();
             }
             return $this->sendResponse(result: $profile, message: "fetch data successful...");
         } catch (\Exception $e) {
@@ -116,7 +116,7 @@ class ProfileController extends Controller
     public function exportPdf()
     {
 
-        $users = Profile::with('users')->whereNotNull('nama')->get();
+        $users = Profile::with('users')->whereNotNull('nama')->where('username', '!=', 'superadmin')->get();
         $view = view('pdf')->with([
             "title" => "Report Alumni yang terdaftar",
             "date" => date("m/d/Y"),
