@@ -50,6 +50,8 @@ class ProfileUpdateRequest extends FormRequest
             "gaji" => "integer|nullable",
             "deskripsi" => "string|nullable",
             "photo" => "file|max:10240|nullable",
+            "is_sesuai" => "nullable"
+
         ];
     }
 

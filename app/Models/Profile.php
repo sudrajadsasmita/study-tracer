@@ -28,6 +28,7 @@ class Profile extends Model
         "gaji",
         "deskripsi",
         "photo",
+        "is_sesuai",
         "role"
     ];
 
