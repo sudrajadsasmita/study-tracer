@@ -56,20 +56,34 @@
             <th>No</th>
             <th>Nama</th>
             <th>NIM</th>
-            <th>Email</th>
             <th>IPK</th>
             <th>Tahun Masuk</th>
             <th>Tahun Lulus</th>
+            <th>Status Bekerja</th>
+            <th>Saran Prodi</th>
+            <th>Alamat Perusahaan</th>
+            <th>Jabatan</th>
+            <th>Lama Bekerja</th>
+            <th>Gaji</th>
+            <th>Deskripsi</th>
+            <th>Sesuai Jurusan</th>
         </tr>
         @foreach ($users as $user)
             <tr>
                 <td>{{ $loop->iteration }}</td>
                 <td>{{ $user->nama }}</td>
                 <td>{{ $user->nim }}</td>
-                <td>{{ $user->users[0]->email }}</td>
                 <td>{{ $user->ipk }}</td>
                 <td>{{ $user->tahun_masuk }}</td>
                 <td>{{ $user->tahun_lulus }}</td>
+                <td>{{ $user->status_bekerja }}</td>
+                <td>{{ isset($user->saran_prodi) ? $user->saran_prodi : '-' }}</td>
+                <td>{{ isset($user->alamat_perusahaan) ? $user->alamat_perusahaan : '-' }}</td>
+                <td>{{ isset($user->jabatan) ? $user->jabatan : '-' }}</td>
+                <td>{{ isset($user->lama_bekerja) ? $user->lama_bekerja : '-' }}</td>
+                <td>{{ isset($user->gaji) ? $user->gaji : '-' }}</td>
+                <td>{{ isset($user->deskripsi) ? $user->deskripsi : '-' }}</td>
+                <td>{{ isset($user->is_sesuai) ? $user->is_sesuai : '-' }}</td>
             </tr>
         @endforeach
     </table>

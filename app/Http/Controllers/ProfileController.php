@@ -117,13 +117,14 @@ class ProfileController extends Controller
     {
 
         $users = Profile::with('users')->whereNotNull('nama')->where('nim', '!=', 'superadmin')->get();
+
         $view = view('pdf')->with([
             "title" => "Report Alumni yang terdaftar",
             "date" => date("m/d/Y"),
             "users" => $users
         ]);
         $pdf = new Dompdf();
-        $pdf->setPaper('A4', 'landscape');
+        $pdf->setPaper('LEGAL', 'landscape');
         $pdf->loadHtml($view->render());
 
         $pdf->render();
