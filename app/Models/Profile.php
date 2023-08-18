@@ -29,13 +29,14 @@ class Profile extends Model
         "deskripsi",
         "photo",
         "is_sesuai",
-        "role"
+        "role",
+        "no_telp"
     ];
 
     public function photo(): Attribute
     {
         return new Attribute(
-            get: fn ($value) => url('/')."/" . $value,
+            get: fn ($value) => url('/') . "/" . $value,
         );
     }
 

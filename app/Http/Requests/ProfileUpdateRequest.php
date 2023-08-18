@@ -49,6 +49,7 @@ class ProfileUpdateRequest extends FormRequest
             "lama_bekerja" => "integer|nullable",
             "gaji" => "string|nullable",
             "deskripsi" => "string|nullable",
+            "no_telp" => "string|nullable",
             "photo" => "file|max:10240|nullable",
             "is_sesuai" => "nullable"
 
@@ -76,6 +77,7 @@ class ProfileUpdateRequest extends FormRequest
             'lama_bekerja.string' => 'Isian dari kolom lama bekerja harus berupa teks',
             'gaji.string' => 'Isian dari kolom gaji harus berupa text',
             'deskripsi.string' => 'Isian dari kolom deskripsi harus berupa teks',
+            'no_telp.string' => 'Isian dari kolom nomor telepon harus berupa teks',
             "photo.file" => "Inputan pada kolom photo harus berupa file",
             "photo.required" => "Inputan pada kolom photo tidak boleh kosong",
             "photo.max" => "Inputan pada kolom image tidak boleh lebih dari 10MB",
