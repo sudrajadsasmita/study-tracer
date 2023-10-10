@@ -116,7 +116,7 @@ class ProfileController extends Controller
     public function exportPdf()
     {
 
-        $users = Profile::with('users')->whereNotNull('nama')->where('nim', '!=', 'superadmin')->get();
+        $users = Profile::with('users')->whereNotNull('nama')->where('nim', '!=', 'superadmin')->orderBy('tahun_lulus', 'DESC')->get();
 
         $view = view('pdf')->with([
             "title" => "Report Alumni yang terdaftar",
