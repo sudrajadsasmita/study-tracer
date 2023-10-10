@@ -25,17 +25,20 @@ class EventController extends Controller
                     if ($request->type != null) {
                         $event = Event::userId(userId: $request->user_id)->type(type: $request->type)->where('nama', 'LIKE', '%' . $search . '%')->get();
                     } else {
-                        $event = Event::userId(userId: $request->user_id)->where('nama', 'LIKE', '%' . $search . '%')->paginate();
+                        $event = Event::userId(userId: $request->user_id)->where('nama', 'LIKE', '%' . $search . '%');
                     }
                 } else {
                     if ($request->type != null) {
-                        $event = Event::type(type: $request->type)->where('nama', 'LIKE', '%' . $search . '%')->paginate();
+                        $event = Event::type(type: $request->type)->where('nama', 'LIKE', '%' . $search . '%');
                     } else {
-                        $event = Event::where('nama', 'LIKE', '%' . $search . '%')->paginate();
+                        $event = Event::where('nama', 'LIKE', '%' . $search . '%');
                     }
                 }
             }
-            return $this->sendResponse(result: $event, message: "fetch data successful...");
+            if ($request->has("paginate") && $request->get("paginate") == "true") {
+                return $event->paginate();
+            }
+            return $this->sendResponse(result: $event->get(), message: "fetch data successful...");
         } catch (\Exception $e) {
             return $this->sendError(error: $e->getMessage());
         }

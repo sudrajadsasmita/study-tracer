@@ -21,11 +21,14 @@ class ProfileController extends Controller
     {
         try {
             if ($request->status_bekerja != null) {
-                $profile = Profile::with(["prodi.faculty"])->statusBekerja(statusBekerja: $request->status_bekerja)->whereNotNull('nama')->where('nim', '!=', 'superadmin')->paginate();
+                $profile = Profile::with(["prodi.faculty"])->statusBekerja(statusBekerja: $request->status_bekerja)->whereNotNull('nama')->where('nim', '!=', 'superadmin');
             } else {
-                $profile = Profile::with(["prodi.faculty"])->whereNotNull('nama')->where('nim', '!=', 'superadmin')->paginate();
+                $profile = Profile::with(["prodi.faculty"])->whereNotNull('nama')->where('nim', '!=', 'superadmin');
             }
-            return $this->sendResponse(result: $profile, message: "fetch data successful...");
+            if ($request->has("paginate") && $request->get("paginate") == "true") {
+                return $profile->paginate();
+            }
+            return $this->sendResponse(result: $profile->get(), message: "fetch data successful...");
         } catch (\Exception $e) {
             return $this->sendError(error: $e->getMessage());
         }
