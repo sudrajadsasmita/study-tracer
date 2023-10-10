@@ -25,13 +25,13 @@ class EventController extends Controller
                     if ($request->type != null) {
                         $event = Event::userId(userId: $request->user_id)->type(type: $request->type)->where('nama', 'LIKE', '%' . $search . '%')->get();
                     } else {
-                        $event = Event::userId(userId: $request->user_id)->where('nama', 'LIKE', '%' . $search . '%')->get();
+                        $event = Event::userId(userId: $request->user_id)->where('nama', 'LIKE', '%' . $search . '%')->paginate();
                     }
                 } else {
                     if ($request->type != null) {
-                        $event = Event::type(type: $request->type)->where('nama', 'LIKE', '%' . $search . '%')->get();
+                        $event = Event::type(type: $request->type)->where('nama', 'LIKE', '%' . $search . '%')->paginate();
                     } else {
-                        $event = Event::where('nama', 'LIKE', '%' . $search . '%')->get();
+                        $event = Event::where('nama', 'LIKE', '%' . $search . '%')->paginate();
                     }
                 }
             }
